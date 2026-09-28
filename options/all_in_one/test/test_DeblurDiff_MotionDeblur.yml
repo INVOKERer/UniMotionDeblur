@@ -1,0 +1,184 @@
+# CUDA_VISIBLE_DEVICES=4 BASICSR_JIT=True python basicsr/test.py -opt options/all_in_one/test/test_NAFNet_deblur.yml
+name: UniDeblur_DeblurDiff_1000k-2e-4-ema-sched1-512bs8
+suffix: ~  # add suffix to saved images
+model_type: DiffusionModel
+scale: 1
+crop_border: 0  # crop border when evaluation. If None, crop the scale pixels
+num_gpu: auto  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+  test_GoPro:
+    name: GoPro
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/GoPro/test/sharp
+    dataroot_lq: /data/mxt_data/GoPro/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+#  test_HIDE:
+#    name: HIDE
+#    dataset_class_idx: 0
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/HIDE/test/sharp
+#    dataroot_lq: /data/mxt_data/HIDE/test/blur
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+  test_REDS:
+    name: REDS
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/REDS/test/sharp
+    dataroot_lq: /data/mxt_data/REDS/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_RSBlur:
+    name: RSBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/RSBlur/test/sharp
+    dataroot_lq: /data/mxt_data/RSBlur/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_VARMIORe:
+    name: VAR-MIORe
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/AIM/train_sharp_extreme
+    dataroot_lq: /data/mxt_data/AIM/train_blur_extreme
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_SloMoBlur4:
+    name: SloMoBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/SloMoBlur/40000_42045/groundtruth
+    dataroot_lq: /data/mxt_data/SloMoBlur/40000_42045/blurred
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+# network structures
+network_diffusion:
+  type: Diffusion
+  linear_start: 0.00085
+  linear_end: 0.0120
+  timesteps: 1000
+# network structures
+network_g:
+  type: ControlLDM
+#  params:
+  latent_scale_factor: 0.18215
+#  sd_pth: /home/ubuntu/150t/personal_data/mxt/MXT/code_reference/v2-1_512-ema-pruned.ckpt
+  unet_cfg:
+    use_checkpoint: True
+    image_size: 32 # unused
+    in_channels: 4
+    out_channels: 4
+    model_channels: 320
+    attention_resolutions: [ 4, 2, 1 ]
+    num_res_blocks: 2
+    channel_mult: [ 1, 2, 4, 4 ]
+    num_head_channels: 64 # need to fix for flash-attn
+    use_spatial_transformer: True
+    use_linear_in_transformer: True
+    transformer_depth: 1
+    context_dim: 1024
+    legacy: False
+  vae_cfg:
+    embed_dim: 4
+    ddconfig:
+      double_z: true
+      z_channels: 4
+      resolution: 256
+      in_channels: 3
+      out_ch: 3
+      ch: 128
+      ch_mult:
+      - 1
+      - 2
+      - 4
+      - 4
+      num_res_blocks: 2
+      attn_resolutions: []
+      dropout: 0.0
+  clip_cfg:
+    embed_dim: 1024
+    vision_cfg:
+      image_size: 224
+      layers: 32
+      width: 1280
+      head_width: 80
+      patch_size: 14
+    text_cfg:
+      context_length: 77
+      vocab_size: 49408
+      width: 1024
+      heads: 16
+      layers: 24
+    layer: "penultimate"
+  controlnet_cfg:
+    use_checkpoint: True
+    image_size: 32 # unused
+    in_channels: 4
+    hint_channels: 8
+    model_channels: 320
+    attention_resolutions: [ 4, 2, 1 ]
+    num_res_blocks: 2
+    channel_mult: [ 1, 2, 4, 4 ]
+    num_head_channels: 64 # need to fix for flash-attn
+    use_spatial_transformer: True
+    use_linear_in_transformer: True
+    transformer_depth: 1
+    context_dim: 1024
+    legacy: False
+
+
+path:
+  pretrain_network_g: /data/mxt_code/AllinOne/experiments/UniDeblur_DeblurDiff_1000k-2e-4-ema-sched1-512bs8/models/net_g_20000.pth
+  param_key_g: params
+  strict_load_g: true
+
+slide:
+  mini_bs: ~
+  ker_size: [512, 512]
+  overlap_size: [128, 128]
+
+
+# validation settings
+val:
+  save_img: true
+  suffix: ~  # add suffix to saved images, if None, use exp name
+  pbar: true
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    niqe:
+      type: calculate_niqe
+      crop_border: 0
+#    lpips:
+#      type: calculate_lpips
+#      crop_border: 0
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

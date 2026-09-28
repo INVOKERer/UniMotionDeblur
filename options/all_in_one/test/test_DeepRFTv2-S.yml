@@ -1,0 +1,416 @@
+# CUDA_VISIBLE_DEVICES=6 BASICSR_JIT=True python basicsr/test.py -opt options/all_in_one/test/test_DeepRFTv2-B.yml
+name: UniMotionDeblur_DeepRFTv2-S_384
+suffix: ~  # add suffix to saved images
+model_type: TestModel
+scale: 1
+crop_border: 0  # crop border when evaluation. If None, crop the scale pixels
+num_gpu: auto  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+#  test_e1:
+#    name: DPDD_error
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/DPDD/sharp_error
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/DPDD/blur_error
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_e2:
+#    name: LFDOF_error
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/LFDOF/sharp_error
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/LFDOF/blur_error
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_e3:
+#    name: RealDOF_error
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/RealDOF/sharp_error
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/RealDOF/blur_error
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_e4:
+#    name: RealDOF_error
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/MIORe/sharp_error
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/MIORe/blur_error
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_e5:
+#    name: RealDOF_error
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/VAR-MIORe/sharp_error
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/VAR-MIORe/blur_error
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+  test_m1:
+    name: GoPro
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/GoPro_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+  test_m2_1:
+    name: HIDE
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/HIDE_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+  test_m2_2:
+    name: REDS
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/REDS_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+  test_m2_3:
+    name: RSBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/RSBlur_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+
+  test_m3:
+    name: MIORe
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/MIORe_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+  test_m4:
+    name: VAR-MIORe
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/VAR-MIORe_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_m5:
+    name: BSD
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/BSD_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+  test_m6:
+    name: FoundIR
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/FoundIR_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_m7:
+    name: RealLOL
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur/RealLOL_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_m8:
+    name: ReLoBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/MotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/MotionBlur/ReLoBlur_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_l1:
+    name: LOLBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur/LOLBlur_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+  test_l2:
+    name: RealBlur_R
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur/RealBlur_R_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+  test_l3:
+    name: RealBlur_J
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur
+    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/LowLightMotionBlur/RealBlur_J_meta_info.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+#  test_d1:
+#    name: DPDD*
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/DPDD_meta_info.txt
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_dx1:
+#    name: DPDD
+#    dataset_class_idx: 1
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/DPDD/test/target
+#    dataroot_lq: /data/mxt_data/DPDD/test/inputC
+#    #    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/DPDD_meta_info.txt
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_d2:
+#    name: LFDOF
+#    dataset_class_idx: 1
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/LFDOF_meta_info.txt
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#
+#  test_d3:
+#    name: RealDOF*
+#    dataset_class_idx: 1
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/RealDOF_meta_info.txt
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_dx3:
+#    name: RealDOF
+#    dataset_class_idx: 1
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/RealDOF/sharp
+#    dataroot_lq: /data/mxt_data/RealDOF/blur
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_md1:
+#    name: DPDDx
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/DPDD_motionblur_meta_info.txt
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#
+#  test_md2:
+#    name: LFDOFx
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/LFDOF_motionblur_meta_info.txt
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#
+#  test_md3:
+#    name: RealDOFx
+#    dataset_class_idx: 2
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    dataroot_lq: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur
+#    meta_info_file: /data/mxt_data/uniDeblur_dataset/test/DefocusBlur/RealDOF_motionblur_meta_info.txt
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+
+
+metric_avg_list: [['HIDE', 'REDS', 'RSBlur', 'LOLBlur', 'RealBlur_R', 'RealBlur_J'], ['RealBlur_R', 'RealBlur_J'], ['MIORe', 'VAR-MIORe'], ['MIORe', 'BSD'], ['MIORe', 'BSD', 'FoundIR', 'RealLOL', 'ReLoBlur']]
+align_list:
+  names: []
+
+network_g:
+  type: DeepRFTv2
+  small_scale: false
+  mid_scale: true
+  save_memory_global_encoder: [false, false, false, false]
+  save_memory_global_decoder: [false, false, false, false]
+  save_memory_kernel: [false, false, false, false]
+  get_ker: false
+  inp_channels: 3
+  out_channels: 3
+  dims: [48, 48, 48] # [64, 512, 256, 512] # [32, 64, 512, 256]
+  num_global_unet: 2
+  deblur_kernel_mode: ker_max_mid # ker_max_mid_small ker_max_mid ker_max no_ker
+  deblur_kernel: true
+  deblur_mask: false
+  latent_sharp: true
+  inp_feature: feature  # inp_latentsharp_feature
+  deconv_feature: feature
+  norm_type: LayerNorm  # LayerNorm BatchNorm  InstanceNorm None
+  spatial_add: false
+  spatial_decoder: false
+  num_ker: 48
+  pad_size: 0
+  dims_ker: [48, 48, 48]  #  32
+  ks: [0, 0, 0] # [0, 0, 0] # [32, 16, 8]
+#  sub_image: false
+  sub_image_size: [128, 128]
+  train_size: [ 384, 384 ]
+  patch_size: [ 384, 384 ]
+  overlap_size: [16, 16] # [440, 440] [48, 48] #
+  downsample: concat # concat_downsample # downsample downsample_concat
+  downsample_ker: concat_nodownsample # noconcat_nodownsample concat_nodownsample
+  downsample_mode: conv # bilinear shuffle_conv conv_shuffle conv
+  upsample_mode: conv1x1_shuffle   # bilinear conv1x1_shuffle shuffle_conv conv_shuffle conv
+  fuse_downsample_mode: conv
+  fuse_upsample_mode: conv1x1_shuffle
+  fuse_method_encoder: Fuse_in_Encoder # a DownSample2shallow # b Fuse_in_Encoder # c Fuse_in_Encoder2shallow # NoFuse # DownSampleAdd
+  fuse_method_decoder: DownSample2latent # d DownSample2latent # e Fuse_in_Decoder # f Fuse_in_Decoder2latent # UpSampleAdd012
+  num_heads_enc: [1, 2, 4, 8]
+  num_heads_dec: [8, 4, 2, 1] # ['fcnaf', 'fcnaf', 'fcnaf'] ['naf', 'naf', 'naf'] fdmambaforward_naf fsmambaforward_naf fmambaforward_naf fouriernaf flocalmambaforward_naf
+  baseblock_enc_small: [['localnaf', 'localnaf', 'localnaf'], ['localnaf', 'localnaf', 'localnaf']] # ASSMBlock
+  baseblock_dec_small: [['localnaf', 'localnaf', 'localnaf'], ['localnaf', 'localnaf', 'localnaf']]
+  baseblock_enc_mid: [['localnaf', 'localnaf', 'localnaf'], ['localnaf', 'localnaf', 'localnaf']]
+  baseblock_dec_mid: [['localnaf', 'localnaf', 'localnaf'], ['localnaf', 'localnaf', 'localnaf']]
+  baseblock_enc_max: [ [ 'localnaf', 'localnaf', 'localnaf' ], [ 'localnaf', 'localnaf', 'localnaf' ] ]
+  baseblock_dec_max: [ [ 'localnaf', 'localnaf', 'localnaf' ], [ 'localnaf', 'localnaf', 'localnaf' ] ]
+#  baseblock_enc_max_global: [['localnaf', 'LocalNAFEVSBlock_patch', 'LocalNAFEVSBlock_patch'], ['localnaf', 'LocalNAFEVSBlock_patch', 'LocalNAFEVSBlock_patch']] # localnaf naf_patch logfouriernaf LocalNAFEVSBlock_patch
+#  baseblock_dec_max_global: [['LocalNAFEVSBlock_patch', 'LocalNAFEVSBlock_patch', 'localnaf'], ['LocalNAFEVSBlock_patch', 'LocalNAFEVSBlock_patch', 'localnaf']]
+  baseblock_enc_ker: [ 'SS2D', 'SS2D', 'SS2D', 'SS2D'] # EVSBlock EVSS nafwoffn ResBlock LNResBlock
+  baseblock_dec_ker: [ 'SS2D', 'SS2D', 'SS2D', 'SS2D'] # kerv1LN kerv2LN ResBlock naf LNResBlock LNResBlock1x1
+  enc_small_layers: [ 1, 4, 8 ]
+  dec_small_layers: [ 8, 4, 1 ]
+  enc_mid_layers: [[ 1, 4, 8 ], [ 1, 4, 8 ]]
+  dec_mid_layers: [[ 8, 4, 1 ], [ 8, 4, 1 ]]
+  enc_max_layers: [[ 1, 4, 8 ], [ 1, 4, 8 ]]
+  dec_max_layers: [[ 8, 4, 1 ], [ 8, 4, 1 ]]
+  enc_ker_layers: [ 1, 1, 1, 1 ] # [ 2, 2, 4 ] # [ 2, 2, 6 ] [ 2, 2, 16 ]
+  dec_ker_layers: [ 1, 1, 1, 1 ] # [ 2, 2, 2 ] [ 16, 2, 2 ]
+  drop_path: 0.
+#  small_enc: false
+  mid_flip: false
+  save_memory: false
+  kernel_size: 65 # 19 31
+  window_size: 8
+
+
+path:
+#  pretrain_network_g: /data/mxt_code/AllinOne/experiments/Ablation_UniMotionDeblur_NAFNet32_300k_256bs16_noema_1e-3/models/net_g_300000.pth
+  pretrain_network_g: /home/ubuntu/150t/personal_data/mxt/MXT/ckpts/uniDeblur/DeepRFTv2-S/uniMotionDeblur.pth
+  param_key_g: params_ema
+  strict_load_g: true
+
+slide:
+  slide_datasets: []
+  mini_bs: 4
+  ker_size: [ 384, 384 ]
+  overlap_size: [ 48, 48 ]
+#  ker_size: [800, 800]
+#  overlap_size: [120, 120]
+
+# validation settings
+val:
+  save_img: true
+  suffix: ~  # add suffix to saved images, if None, use exp name
+  pbar: true
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    niqe:
+      type: calculate_niqe
+      crop_border: 0
+#    lpips:
+#      type: calculate_lpips
+#      crop_border: 0
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

@@ -1,0 +1,197 @@
+# CUDA_VISIBLE_DEVICES=6 BASICSR_JIT=True python basicsr/test.py -opt options/all_in_one/test/test_MotionDeblur.yml
+name: UniDeblur_NAFNetX
+suffix: ~  # add suffix to saved images
+model_type: TestModel
+scale: 1
+crop_border: 0  # crop border when evaluation. If None, crop the scale pixels
+num_gpu: auto  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+  test_1:
+    name: GoPro
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/GoPro/test/sharp
+    dataroot_lq: /data/mxt_data/GoPro/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_2:
+    name: FoundIR
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/FoundIR/test_sharp/01Blur
+    dataroot_lq: /data/mxt_data/FoundIR/test_blur/01Blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_3:
+    name: ReLoBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/ReLoBlur/test/sharp
+    dataroot_lq: /data/mxt_data/ReLoBlur/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_4:
+    name: MotionBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_MotionBlur_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_5:
+    name: LowlightNightBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_MotionBlur_LowlightorNight_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_6:
+    name: DPDD
+    dataset_class_idx: 2
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/DPDD/test/target
+    dataroot_lq: /data/mxt_data/DPDD/test/inputC
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_7:
+    name: RealDOF
+    dataset_class_idx: 2
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/RealDOF/sharp
+    dataroot_lq: /data/mxt_data/RealDOF/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_8:
+    name: DefocusBlur
+    dataset_class_idx: 2
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_Defocus_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_9:
+    name: InfraredBlur
+    dataset_class_idx: 3
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_InfraredDeblur_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_10:
+    name: MedBlur_HE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_MdeDefocus_HE_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_11:
+    name: MedBlur_1
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_MdeDefocus_1_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_12:
+    name: MedBlur_2
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_MdeDefocus_2_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_13:
+    name: RemoteSensing
+    dataset_class_idx: 5
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data
+    dataroot_lq: /data/mxt_data
+    meta_info_file: /data/mxt_data/meta_info_RemoteSensingDeblur_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+# network structures
+network_g:
+  type: NAFNetX
+  width: 64
+  patch_size: [[128, 128], [64, 64], [32, 32], [16, 16]]
+  patch_size_latent: [8, 8]
+  enc_blk_nums: [1, 1, 1, 28]
+  middle_blk_num: 1
+  dec_blk_nums: [1, 1, 1, 1]
+  window_size: 16
+
+path:
+  pretrain_network_g: /home/ubuntu/150t/personal_data/mxt/MXT/ckpts/uniDeblur/NAFNetX/net_g_1000000.pth
+  param_key_g: params_ema
+  strict_load_g: true
+
+slide:
+  slide_datasets: []
+  mini_bs: 1
+  ker_size: [800, 800]
+  overlap_size: [120, 120]
+
+# validation settings
+val:
+  save_img: true
+  suffix: ~  # add suffix to saved images, if None, use exp name
+  pbar: true
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    niqe:
+      type: calculate_niqe
+      crop_border: 0
+#    lpips:
+#      type: calculate_lpips
+#      crop_border: 0
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

@@ -1,0 +1,405 @@
+# CUDA_VISIBLE_DEVICES=4 BASICSR_JIT=True python basicsr/test.py -opt options/all_in_one/test/test_NAFNet_deblur.yml
+name: UniDeblur_NAFNet
+suffix: ~  # add suffix to saved images
+model_type: SRModel
+scale: 1
+crop_border: 0  # crop border when evaluation. If None, crop the scale pixels
+num_gpu: auto  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+  test_GoPro:
+    name: GoPro
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/GoPro/test/sharp
+    dataroot_lq: /data/mxt_data/GoPro/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_HIDE:
+    name: HIDE
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/HIDE/test/sharp
+    dataroot_lq: /data/mxt_data/HIDE/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_REDS:
+    name: REDS
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/REDS/test/sharp
+    dataroot_lq: /data/mxt_data/REDS/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_RSBlur:
+    name: RSBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/RSBlur/test/sharp
+    dataroot_lq: /data/mxt_data/RSBlur/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_VARMIORe:
+    name: VAR-MIORe
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/AIM/train_sharp_extreme
+    dataroot_lq: /data/mxt_data/AIM/train_blur_extreme
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_SloMoBlur4:
+    name: SloMoBlur
+    dataset_class_idx: 0
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/SloMoBlur/40000_42045/groundtruth
+    dataroot_lq: /data/mxt_data/SloMoBlur/40000_42045/blurred
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_LOLBlur:
+    name: LOLBlur
+    dataset_class_idx: 1
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/LOLBlur/test/sharp
+    dataroot_lq: /data/mxt_data/LOLBlur/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+#  test_RealBlurR:
+#    name: RealBlur_R
+#    dataset_class_idx: 1
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/RealBlur/RealBlur_R/test/sharp
+#    dataroot_lq: /data/mxt_data/RealBlur/RealBlur_R/test/blur
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+#  test_RealBlurJ:
+#    name: RealBlur_J
+#    dataset_class_idx: 1
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/RealBlur/RealBlur_J/test/sharp
+#    dataroot_lq: /data/mxt_data/RealBlur/RealBlur_J/test/blur
+#    io_backend:
+#      type: disk
+#    num_worker_per_gpu: 1
+#    batch_size_per_gpu: 1
+
+  test_LFDOF:
+    name: LFDOF
+    dataset_class_idx: 2
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/LFDOF/test_data/ground_truth
+    dataroot_lq: /data/mxt_data/LFDOF/test_data/input
+    meta_info_file: /data/mxt_data/LFDOF/test_data/meta_info_test.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_RealDOF:
+    name: RealDOF
+    dataset_class_idx: 2
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/RealDOF/sharp
+    dataroot_lq: /data/mxt_data/RealDOF/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_DPDD:
+    name: DPDD
+    dataset_class_idx: 2
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/DPDD/test/target
+    dataroot_lq: /data/mxt_data/DPDD/test/inputC
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_JFD3:
+    name: JFD3
+    dataset_class_idx: 3
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/JFD3/IRBlurUAV/syn/test/sharp
+    dataroot_lq: /data/mxt_data/JFD3/IRBlurUAV/syn/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_NCIRD:
+    name: NCIRD
+    dataset_class_idx: 3
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/NCIRD/test/sharp
+    dataroot_lq: /data/mxt_data/NCIRD/test/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_MedeiWeiaiHE:
+    name: WeiaiHE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/weiai_HE/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/weiai_HE/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/weiai_HE/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_MedeiWeiaiCAM52:
+    name: WeiaiHE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/weiai_CAM52/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/weiai_CAM52/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/weiai_CAM52/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_MedeiWeiaiCAM52_HE:
+    name: WeiaiHE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/weiai_CAM52_HE/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/weiai_CAM52_HE/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/weiai_CAM52_HE/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_MedeiWeiaiKi67:
+    name: WeiaiHE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/weiai_Ki67/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/weiai_Ki67/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/weiai_Ki67/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_GuJuLiuAiH3F3A:
+    name: GuJuLiuAi_H3F3A
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/GuJuLiuAi_H3F3A/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/GuJuLiuAi_H3F3A/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/GuJuLiuAi_H3F3A/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_GuJuLiuAiSATB2:
+    name: GuJuLiuAi_SATB2
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/GuJuLiuAi_SATB2/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/GuJuLiuAi_SATB2/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/GuJuLiuAi_SATB2/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_GuJuLiuAiH3F3ASATB2:
+    name: GuJuLiuAi_H3F3ASATB2
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/GuJuLiuAi_H3F3ASATB2/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/GuJuLiuAi_H3F3ASATB2/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/GuJuLiuAi_H3F3ASATB2/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_RuXianAiER:
+    name: RuXianAi_ER
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/RuXianAi_ER/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/RuXianAi_ER/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/RuXianAi_ER/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_RuXianAiPR:
+    name: RuXianAi_PR
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/RuXianAi_PR/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/RuXianAi_PR/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/RuXianAi_PR/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_RuXianAiERPR:
+    name: RuXianAi_ERPR
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/RuXianAi_ERPR/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/RuXianAi_ERPR/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/RuXianAi_ERPR/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_RuXianAiHE:
+    name: RuXianAi_HE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/RuXianAi_HE/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/RuXianAi_HE/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/RuXianAi_HE/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_taipanHE:
+    name: taipan_HE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/taipan_HE/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/taipan_HE/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/taipan_HE/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_xiaoXiBaoAiHE:
+    name: xiaoXiBaoAi_HE
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/xiaoXiBaoAi_HE/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/xiaoXiBaoAi_HE/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/xiaoXiBaoAi_HE/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_MedDiffQuick:
+    name: yiXianCHuanCi_DiffQuick
+    dataset_class_idx: 4
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/MedicalDefocus/yiXianCHuanCi_DiffQuick/test/target_crops
+    dataroot_lq: /data/mxt_data/MedicalDefocus/yiXianCHuanCi_DiffQuick/test/input_crops
+    meta_info_file: /data/mxt_data/MedicalDefocus/yiXianCHuanCi_DiffQuick/test/meta_info_val.txt
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_UMADD:
+    name: UMADD
+    dataset_class_idx: 5
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/underwater/UMADD/val/sharp/sharp
+    dataroot_lq: /data/mxt_data/underwater/UMADD/val/blur/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_UCDD:
+    name: UCDD
+    dataset_class_idx: 5
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/underwater/UCDD/val/sharp
+    dataroot_lq: /data/mxt_data/underwater/UCDD/val/blur
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+  test_DOTA:
+    name: DOTA
+    dataset_class_idx: 6
+    type: PairedImageDataset
+    dataroot_gt: /data/mxt_data/DOTA/test/target_crops
+    dataroot_lq: /data/mxt_data/DOTA/test/input_crops
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+#    center_crop: 256
+#  test_3:
+#    name: Urban100x4
+#    dataset_class_idx: 5
+#    type: PairedSRImageDataset
+#    upscale: 4
+#    dataroot_gt: /data/mxt_data/SR/SR/Urban100/HR
+#    dataroot_lq: /data/mxt_data/SR/SR/Urban100/LR_bicubic/X4
+#    filename_tmpl: '{}x4'
+#    io_backend:
+#      type: disk
+#    center_crop: 256
+#  test_2:
+#    name: DOTA
+#    dataset_class_idx: 6
+#    type: PairedImageDataset
+#    dataroot_gt: /data/mxt_data/DOTA/test/sharp
+#    dataroot_lq: /data/mxt_data/DOTA/test/blur
+#    io_backend:
+#      type: disk
+#    center_crop: 256
+# network structures
+network_g:
+  type: NAFNet
+  train_size: [1, 3, 128, 128]
+  width: 64
+  enc_blk_nums: [1, 1, 1, 28]
+  middle_blk_num: 1
+  dec_blk_nums: [1, 1, 1, 1]
+  window_size: 16
+
+path:
+  pretrain_network_g: /data/mxt_code/AllinOne/experiments/UniDeblur_NAFNet_500k-2e-4-128bs16/models/net_g_600000.pth
+  param_key_g: params
+  strict_load_g: true
+
+#slide:
+#  mini_bs: ~
+#  ker_size: [128, 128]
+#  overlap_size: [16, 16]
+
+
+# validation settings
+val:
+  save_img: false
+  suffix: ~  # add suffix to saved images, if None, use exp name
+  pbar: true
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    niqe:
+      type: calculate_niqe
+      crop_border: 0
+#    lpips:
+#      type: calculate_lpips
+#      crop_border: 0
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

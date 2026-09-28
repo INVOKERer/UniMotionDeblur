@@ -1,0 +1,105 @@
+# general settings
+name: train_Rsetormer_motion_deblur_from_derain
+model_type: SRModel
+scale: 1
+num_gpu: 1  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: Deblur
+    type: PairedImageDataset
+    dataroot_gt: /public/liguoqi/jkhu/MotionDeblur/GoPro/train/target_crops
+    dataroot_lq: /public/liguoqi/jkhu/MotionDeblur/GoPro/train/input_crops
+    io_backend:
+      type: disk
+    gt_size: 128
+    use_hflip: true
+    use_rot: true
+    # filename_tmpl: '{}x2'
+
+    # data loader
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 8
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+    pin_memory: true
+
+  val_1:
+    name: deblur
+    type: PairedImageDataset
+    dataroot_gt: /public/liguoqi/jkhu/MotionDeblur/test_sub/target
+    dataroot_lq: /public/liguoqi/jkhu/MotionDeblur/test_sub/input
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+# network structures
+network_g:
+  type: Restormer_origin
+  window_size: 8
+
+find_unused_parameters: false
+
+# path
+path:
+  pretrain_network_g: /public/liguoqi/jkhu/59_jkhu/jkhu/dcpt/pretrain_models/restormer/deraining.pth
+  strict_load_g: true
+  param_key_g: params
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: AdamW
+    lr: !!float 3e-4
+    weight_decay: !!float 1e-4
+    betas: [0.9, 0.999]
+
+  scheduler:
+    type: CosineAnnealingRestartLR
+    periods: [100000, 300000]
+    restart_weights: [1, 1]
+    eta_min: [0.0003, 0.000001]
+
+  total_iter: 100000  # 1000 epoch 1 nnproc
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+
+# validation settings
+val:
+  val_freq: !!float 4e3
+  save_img: false
+
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+      image_range: 255.0
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 4e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

@@ -1,0 +1,216 @@
+# general settings
+name: pretrain_PromptIR_all_in_one_derain_denoise_dehaze_lowlight_deblur
+model_type: DCPTModel
+scale: 1
+num_gpu: auto  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+classify: true
+
+# dataset and data loader settings
+datasets:
+  train_1:
+    name: Derain
+    type: PairedImageDataset
+    dataroot_gt: /mnt/nasv3/hjk/DerainDataset/Rain13k/train/Rain13K/target
+    dataroot_lq: /mnt/nasv3/hjk/DerainDataset/Rain13k/train/Rain13K/input
+    io_backend:
+      type: disk
+    gt_size: 128
+    use_hflip: true
+    use_rot: true
+  train_2:
+    name: Denoise
+    type: PairedImageDenoiseDataset
+    dataroot_gt: /mnt/nasv3/hjk/DenoiseDataset/train/DFWB
+    io_backend:
+      type: disk
+    gt_size: 128
+    use_hflip: true
+    use_rot: true
+    sigma_type: choice
+    sigma_range: [15, 25, 50]
+  train_3:
+    name: Dehaze
+    type: PairedImageDehazeDataset
+    dataroot_gt: /mnt/nasv3/hjk/DehazeDataset/OTS_BETA/original
+    dataroot_lq: /mnt/nasv3/hjk/DehazeDataset/OTS_BETA/synthetic/overall
+    io_backend:
+      type: disk
+    gt_size: 128
+    use_hflip: true
+    use_rot: true
+  train_4:
+    name: LowLight
+    type: PairedImageDataset
+    dataroot_gt: /mnt/nasv3/hjk/LowLightDataset/LOL_syns/Normal
+    dataroot_lq: /mnt/nasv3/hjk/LowLightDataset/LOL_syns/Low
+    io_backend:
+      type: disk
+    gt_size: 128
+    use_hflip: true
+    use_rot: true
+    dataset_enlarge_ratio: 50
+  train_5:
+    name: Deblur
+    type: PairedImageDataset
+    dataroot_gt: /mnt/nasv3/hjk/DeblurDataset/GoPro/train/target_crops
+    dataroot_lq: /mnt/nasv3/hjk/DeblurDataset/GoPro/train/input_crops
+    io_backend:
+      type: disk
+    gt_size: 128
+    use_hflip: true
+    use_rot: true
+    dataset_enlarge_ratio: 5
+
+  val_1:
+    name: Rain100L
+    type: PairedImageDataset
+    dataroot_gt: /mnt/nasv3/hjk/DerainDataset/100L/Rain100L/norain
+    dataroot_lq: /mnt/nasv3/hjk/DerainDataset/100L/Rain100L/rainy
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+    center_crop: 256
+  val_2:
+    name: CBSD68
+    type: PairedImageDenoiseDataset
+    dataroot_gt: datasets/denoise/test/CBSD68
+    io_backend:
+      type: disk
+    sigma_type: constant
+    sigma_range: 25
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+    center_crop: 256
+  val_3:
+    name: SOTS
+    type: PairedImageDehazeDataset
+    dataroot_gt: /mnt/nasv3/hjk/DehazeDataset/SOTS/outdoor/gt
+    dataroot_lq: /mnt/nasv3/hjk/DehazeDataset/SOTS/outdoor/hazy
+    io_backend:
+      type: disk
+    suffix: .png
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+    center_crop: 256
+  val_4:
+    name: LowLight
+    type: PairedImageDataset
+    dataroot_gt: /mnt/nasv3/hjk/LowLightDataset/lol_v1_eval/high
+    dataroot_lq: /mnt/nasv3/hjk/LowLightDataset/lol_v1_eval/low
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+    center_crop: 256
+  val_5:
+    name: Gopro
+    type: PairedImageDataset
+    dataroot_gt: /mnt/nasv3/hjk/uformer_dataset/GoPro/test/groundtruth
+    dataroot_lq: /mnt/nasv3/hjk/uformer_dataset/GoPro/test/input
+    io_backend:
+      type: disk
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+    center_crop: 256
+
+dataloader:
+  phase: train
+  use_shuffle: true
+  num_worker_per_gpu: 1
+  batch_size_per_gpu: 4
+  dataset_enlarge_ratio: 1
+  prefetch_mode: ~
+  pin_memory: true
+
+dataloader_val:
+  phase: val
+  use_shuffle: false
+  num_worker_per_gpu: 1
+  batch_size_per_gpu: 1
+  dataset_enlarge_ratio: 1
+  prefetch_mode: ~
+  pin_memory: true
+
+# network structures
+network_g:
+  type: PromptIR
+  window_size: 8
+
+find_unused_parameters: false
+
+hook_names: reduce_noise_level
+
+network_dc:
+  type: PromptIR_NoImg_DC
+  feature_dims: [96, 192, 192]
+  num_classes: 5
+
+path:
+  pretrain_network_g: ~
+  strict_load_g: false
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: AdamW
+    lr: !!float 2e-4
+    weight_decay: 0
+    betas: [0.9, 0.999]
+  optim_dc:
+    type: AdamW
+    lr: !!float 5e-5
+    weight_decay: !!float 1e-4
+    betas: [0.9, 0.999]
+
+  scheduler:
+    type: CosineAnnealingRestartLR
+    periods: [1000000]
+    restart_weights: [1]
+    eta_min: !!float 1e-6
+
+  total_iter: 1000000  # 1000 epoch 1 nnproc
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+  classify_opt:
+    type: FocalLoss
+    gamma: 2.0
+
+# validation settings
+val:
+  val_freq: !!float 2e4
+  save_img: false
+
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: true
+      image_range: 255.0
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: true
+      image_range: 255.0
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 2e4
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500
