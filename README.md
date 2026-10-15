@@ -1,3 +1,5 @@
+[![Papers with Code: #2 on HIDE](https://paperswithcode.co/api/v1/papers/2610.12941/leaderboard-badge.svg?eval=38153&live=1)](https://paperswithcode.co/api/v1/papers/2610.12941/leaderboard-badge-link?eval=38153)
+
 # [Unified Motion Deblurring via Fourier Convolution Learning](https://arxiv.org/pdf/2610.12941)
 
 [processed datasets](https://huggingface.co/datasets/XintianMao1997/UniMotionDeblur)
