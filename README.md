@@ -6,6 +6,16 @@
 [ckpts](https://huggingface.co/XintianMao1997/UniMotionDeblur)
 [results](https://huggingface.co/XintianMao1997/UniMotionDeblur)
 
+## Citation
+If you use UniDeblur, please consider citing:
+```
+@inproceedings{xintm2026UniDeblur, 
+    title = {Unified Motion Deblurring via Fourier Convolution Learning},
+    author = {Xintian Mao, Jiansheng Wang, Huaiyuan Wang, Qingli Li, Yan Wang}, 
+    booktitle = {arXiv:2610.12941}, 
+    year = {2025}
+    }
+```
 
 ## Citation for Datasets
 ```
