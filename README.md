@@ -13,7 +13,7 @@ If you use UniDeblur, please consider citing:
     title = {Unified Motion Deblurring via Fourier Convolution Learning},
     author = {Xintian Mao, Jiansheng Wang, Huaiyuan Wang, Qingli Li, Yan Wang}, 
     booktitle = {arXiv:2610.12941}, 
-    year = {2025}
+    year = {2026}
     }
 ```
 
