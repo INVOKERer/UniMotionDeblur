@@ -2,7 +2,7 @@
 
 # [Unified Motion Deblurring via Fourier Convolution Learning](https://arxiv.org/pdf/2610.12941)
 
-[processed datasets](https://huggingface.co/datasets/XintianMao1997/UniMotionDeblur)
+[datasets](https://huggingface.co/datasets/XintianMao1997/UniMotionDeblur)
 [ckpts](https://huggingface.co/XintianMao1997/UniMotionDeblur)
 [results](https://huggingface.co/XintianMao1997/UniMotionDeblur)
 
