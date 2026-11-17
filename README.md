@@ -1,6 +1,6 @@
 [![Papers with Code: #2 on HIDE](https://paperswithcode.co/api/v1/papers/2610.12941/leaderboard-badge.svg?eval=38153&live=1)](https://paperswithcode.co/api/v1/papers/2610.12941/leaderboard-badge-link?eval=38153)
 
-# [Unified Motion Deblurring via Fourier Convolution Learning](https://arxiv.org/pdf/2610.12941)
+# [DeepRFTv3: Deep Residual Fourier Convolution for Unified Image Deblurring](https://arxiv.org/pdf/2610.12941)
 
 [datasets](https://huggingface.co/datasets/XintianMao1997/UniMotionDeblur)
 [ckpts](https://huggingface.co/XintianMao1997/UniMotionDeblur)
@@ -10,8 +10,8 @@
 If you use UniDeblur, please consider citing:
 ```
 @inproceedings{xintm2026UniDeblur, 
-    title = {Unified Motion Deblurring via Fourier Convolution Learning},
-    author = {Xintian Mao, Jiansheng Wang, Huaiyuan Wang, Qingli Li, Yan Wang}, 
+    title = {DeepRFTv3: Deep Residual Fourier Convolution for Unified Image Deblurring},
+    author = {Xintian Mao, Haofei Song, Huaiyuan Wang, Jiansheng Wang, Qingli Li, Yan Wang}, 
     booktitle = {arXiv:2610.12941}, 
     year = {2026}
     }
